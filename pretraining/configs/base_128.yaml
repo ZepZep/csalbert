@@ -1,0 +1,24 @@
+common:
+    width: 128
+
+dataset:
+    input_file: ""
+    output_file: ""
+    vocab_file: ""
+    dupe_factor: 20
+    max_seq_length: "#width"
+
+pretrain:
+    input_file: ""
+    output_dir: ""
+    export_dir: ""
+    max_seq_length: "#width"
+    num_train_steps: 500000
+    save_checkpoints_steps: 500
+    train_batch_size: 32
+    eval_batch_size: 32
+
+albert_config:
+    max_position_embeddings: "#width"
+    vocab_size: 30000
+
