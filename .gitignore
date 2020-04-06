@@ -1,0 +1,13 @@
+.ipynb_checkpoints
+
+
+pretraining/models/*
+propaganda/dataset/*
+sqad/dataset/*
+
+zother
+
+
+
+
+
