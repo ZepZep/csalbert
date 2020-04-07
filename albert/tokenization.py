@@ -95,9 +95,12 @@ def preprocess_text(inputs, remove_space=True, lower=False):
     except UnicodeDecodeError:
       outputs = six.ensure_text(outputs, "latin-1")
 
-  outputs = unicodedata.normalize("NFKD", outputs)
-  # -csa- commented in old version
-  outputs = "".join([c for c in outputs if not unicodedata.combining(c)])
+  # cs preprocessing
+#  outputs = unicodedata.normalize("NFKD", outputs)
+#  outputs = "".join([c for c in outputs if not unicodedata.combining(c)])
+  outputs = re.sub("[^0-9a-zóěščřžýáíďéťňůúA-ZÓĚŠČŘŽÝÁÍĎÉŤŇŮÚ\\.,\\!\\?% ]", "", outputs)
+  outputs = re.sub("[0-9]+", "#", outputs)
+  
   if lower:
     outputs = outputs.lower()
 

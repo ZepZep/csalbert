@@ -1,10 +1,10 @@
 .ipynb_checkpoints
-
+__pycache__
 
 pretraining/models/*
 propaganda/dataset/*
 sqad/dataset/*
-
+sqad/models/*
 zother
 
 
