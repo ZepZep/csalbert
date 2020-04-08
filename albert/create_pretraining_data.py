@@ -28,6 +28,8 @@ from six.moves import range
 from six.moves import zip
 import tensorflow.compat.v1 as tf
 
+from os.path import basename
+
 flags = tf.flags
 
 FLAGS = flags.FLAGS
@@ -242,12 +244,14 @@ def create_training_instances(input_files, tokenizer, max_seq_length,
 
         # Empty lines are used as document delimiters
         if not line:
+          if not len(all_documents) % 10000:        
+            print(f"{basename(input_file)}: {len(all_documents):7d}")
           all_documents.append([])
         tokens = tokenizer.tokenize(line)
         if tokens:
           all_documents[-1].append(tokens)
 
-  tf.logging.info("Done reading")
+  print(f"{basename(input_file)} Done reading\n")
 
   # Remove empty documents
   all_documents = [x for x in all_documents if x]
@@ -255,9 +259,10 @@ def create_training_instances(input_files, tokenizer, max_seq_length,
 
   vocab_words = list(tokenizer.vocab.keys())
   instances = []
-  for _ in range(dupe_factor):
+  for i in range(dupe_factor):
     for document_index in range(len(all_documents)):
-      tf.logging.info("Document %5d/%d", document_index+1, len(all_documents))
+      if not document_index % 1000:
+        print(f"%s doc %d %5d/%d" % (basename(input_file), i, document_index+1, len(all_documents)))
       instances.extend(
           create_instances_from_document(
               all_documents, document_index, max_seq_length, short_seq_prob,
