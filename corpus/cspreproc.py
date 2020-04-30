@@ -12,9 +12,10 @@ MAX_LENGTH = 500000000
 def preproc(sentence):
     sentence = sentence.strip()
     sentence = sentence.lower()
-    sentence = re.sub("[^0-9a-zóěščřžýáíďéťňůú\\.,\\!\\?% ]", "", sentence)
-    sentence = re.sub("[0-9]+", "#", sentence)
-    #sentence = re.sub(r"([^\. #])([\.,?!])", r"\1 .", sentence)
+    sentence = re.sub("[0-9]", "#", sentence)
+    sentence = re.sub("[‒–—―]", "-", sentence)
+    sentence = re.sub("[“”‘’„“‚‘\"']", "'", sentence)
+    sentence = re.sub("[^0-9a-zóěščřžýáíďéťňůú\\.,\\!\\?%\\(\\)\\-'#: ]", "", sentence)
     return sentence
 
 def preproc_file(path):

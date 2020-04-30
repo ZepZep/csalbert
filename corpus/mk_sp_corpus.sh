@@ -1,3 +1,3 @@
 
-head -q -n $1 preproc/tenten/*
+head -q -n $1 preproc/tta/*
 

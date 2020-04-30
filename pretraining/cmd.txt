@@ -1,0 +1,2 @@
+find datasets/preproc/tenten/*.txt | parallel --ungroup -j 6 ./pretraining.sh {}
+

@@ -98,11 +98,14 @@ def preprocess_text(inputs, remove_space=True, lower=False):
   # cs preprocessing
 #  outputs = unicodedata.normalize("NFKD", outputs)
 #  outputs = "".join([c for c in outputs if not unicodedata.combining(c)])
-  outputs = re.sub("[^0-9a-zóěščřžýáíďéťňůúA-ZÓĚŠČŘŽÝÁÍĎÉŤŇŮÚ\\.,\\!\\?% ]", "", outputs)
-  outputs = re.sub("[0-9]+", "#", outputs)
-  
+ 
   if lower:
     outputs = outputs.lower()
+
+  outputs = re.sub("[0-9]", "#", outputs)
+  outputs = re.sub("[‒–—―]", "-", outputs)
+  outputs = re.sub("[“”‘’„“‚‘\"']", "'", outputs)
+  outputs = re.sub("[^0-9a-zóěščřžýáíďéťňůúA-ZÓĚŠČŘŽÝÁÍĎÉŤŇŮÚ\\.,\\!\\?%\\(\\)\\-'#: ]", "", outputs)
 
   return outputs
 
