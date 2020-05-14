@@ -221,12 +221,14 @@ def validate_flags_or_throw(albert_config):
 
 def main(_):
   tf.logging.set_verbosity(tf.logging.INFO)
+  tf.get_logger().propagate = False
 
   albert_config = modeling.AlbertConfig.from_json_file(FLAGS.albert_config_file)
 
   validate_flags_or_throw(albert_config)
 
   tf.gfile.MakeDirs(FLAGS.output_dir)
+  print("Output:", FLAGS.output_dir)
 
   tokenizer = fine_tuning_utils.create_vocab(
       vocab_file=FLAGS.vocab_file,
@@ -472,6 +474,7 @@ def main(_):
       else:
         for ele in sorted(steps_and_files.items()):
           step, checkpoint_path = ele
+          print("GS: ", global_step, step)
           if global_step >= step:
             if len(_find_valid_cands(step)) > 1:
               for ext in ["meta", "data-00000-of-00001", "index"]:
@@ -480,6 +483,7 @@ def main(_):
                 tf.gfile.Remove(src_ckpt)
             continue
           result, global_step = get_result(checkpoint_path)
+          print("EVAL RESULTS")
           tf.logging.info("***** Eval results *****")
           for key in sorted(result.keys()):
             tf.logging.info("  %s = %s", key, str(result[key]))
@@ -502,7 +506,8 @@ def main(_):
               tf.logging.info("removing {}".format(src_ckpt))
               tf.gfile.Remove(src_ckpt)
           writer.write("=" * 50 + "\n")
-
+      print("Sleeping")
+      time.sleep(10)
     checkpoint_path = os.path.join(FLAGS.output_dir, "model.ckpt-best")
     result, global_step = get_result(checkpoint_path)
     tf.logging.info("***** Final Eval results *****")

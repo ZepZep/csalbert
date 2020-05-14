@@ -356,7 +356,10 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
       end_chartok_pos = _convert_index(orig_to_chartok_index, end_position,
                                        is_start=False)
       tok_end_position = chartok_to_tok_index[end_chartok_pos]
-      assert tok_start_position <= tok_end_position
+      if tok_start_position > tok_end_position:
+        tf.logging.info("START AFTER END")
+        continue
+      ##assert tok_start_position <= tok_end_position
 
     def _piece_to_id(x):
       if six.PY2 and isinstance(x, six.text_type):
@@ -756,9 +759,9 @@ def v1_model_fn_builder(albert_config, init_checkpoint, learning_rate,
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
     """The `model_fn` for TPUEstimator."""
 
-    tf.logging.info("*** Features ***")
-    for name in sorted(features.keys()):
-      tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
+    #tf.logging.info("*** Features ***")
+    #for name in sorted(features.keys()):
+      #tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
 
     if "unique_ids" in features:
       unique_ids = features["unique_ids"]
@@ -801,13 +804,13 @@ def v1_model_fn_builder(albert_config, init_checkpoint, learning_rate,
       else:
         tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
-    tf.logging.info("**** Trainable Variables ****")
-    for var in tvars:
-      init_string = ""
-      if var.name in initialized_variable_names:
-        init_string = ", *INIT_FROM_CKPT*"
-      tf.logging.info("  name = %s, shape = %s%s", var.name, var.shape,
-                      init_string)
+    #tf.logging.info("**** Trainable Variables ****")
+    #for var in tvars:
+      #init_string = ""
+      #if var.name in initialized_variable_names:
+        #init_string = ", *INIT_FROM_CKPT*"
+      #tf.logging.info("  name = %s, shape = %s%s", var.name, var.shape,
+                      #init_string)
 
     output_spec = None
     if mode == tf.estimator.ModeKeys.TRAIN:
@@ -1586,9 +1589,9 @@ def v2_model_fn_builder(albert_config, init_checkpoint, learning_rate,
   def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
     """The `model_fn` for TPUEstimator."""
 
-    tf.logging.info("*** Features ***")
-    for name in sorted(features.keys()):
-      tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
+    #tf.logging.info("*** Features ***")
+    #for name in sorted(features.keys()):
+      #tf.logging.info("  name = %s, shape = %s" % (name, features[name].shape))
 
     # unique_ids = features["unique_ids"]
     input_ids = features["input_ids"]
@@ -1628,13 +1631,13 @@ def v2_model_fn_builder(albert_config, init_checkpoint, learning_rate,
       else:
         tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
-    tf.logging.info("**** Trainable Variables ****")
-    for var in tvars:
-      init_string = ""
-      if var.name in initialized_variable_names:
-        init_string = ", *INIT_FROM_CKPT*"
-      tf.logging.info("  name = %s, shape = %s%s", var.name, var.shape,
-                      init_string)
+    #tf.logging.info("**** Trainable Variables ****")
+    #for var in tvars:
+      #init_string = ""
+      #if var.name in initialized_variable_names:
+        #init_string = ", *INIT_FROM_CKPT*"
+      #tf.logging.info("  name = %s, shape = %s%s", var.name, var.shape,
+                      #init_string)
 
     output_spec = None
     if mode == tf.estimator.ModeKeys.TRAIN:
