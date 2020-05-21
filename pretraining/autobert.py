@@ -4,42 +4,28 @@ import re
 import sys
 import subprocess
 import yaml
+import argparse
 
 from albertrunner import CommandCombiner, ProcessHandler
 
+
+parser = argparse.ArgumentParser(description='Pretrain ALBERT model.')
+parser.add_argument('config', help='config file')
+parser.add_argument('train', help='input file for training')
+parser.add_argument('test', help='input file for test')
+parser.add_argument('model', help='model directory')
+parser.add_argument('steps', help='final step, when to stop')
+parser.add_argument('savesteps', help='how often to create checkpoint')
+args = parser.parse_args()
+
 BINS = {
-    "dataset":  ["/usr/bin/python3", "-m",  "albert.create_pretraining_data"],
-    "pretrain": ["/usr/bin/python3", "ALBERT/run_pretraining.py"],
-    "eval":     ["/usr/bin/python3", "ALBERT/run_pretraining.py"]
+    "pretrain": ["/usr/bin/python3", "albert/run_pretraining.py"],
+    "eval":     ["/usr/bin/python3", "albert/run_pretraining.py"]
 }
 
-if len(sys.argv) < 6:
-    print("usage: autobert [config] [input] [test_input] [model_dir] [steps] [savesteps]")
-    #print("need config file")
-    sys.exit(1)
 
-
-
-with open(sys.argv[1], "r") as f:
+with open(args.config, "r") as f:
     cfg = yaml.safe_load(f)
-    #pprint(cfg)
-
-if "dataset" in sys.argv:
-    print("\n-- Creating dataest --")
-    args = BINS["dataset"][:]
-    for key, val in cfg["dataset"].items():
-        args.append(f"--{key}")
-        if isinstance(val, str) and len(val) > 0 and val[0] == "#":
-            val = cfg["common"][val[1:]]
-        args.append(str(val))
-    
-    print("-- Running:\n   ", " ".join(args), "\n--\n")
-    
-    #proc = subprocess.Popen (args, shell=False)
-    #proc.communicate()
-    
-    print("\n-- Dataest created--\n")
-
 
 
 def options_from_dict(d):
@@ -115,29 +101,22 @@ class Evaluator(ProcessHandler):
             self.eval_prog = match.group(1)
             return ""
         return line
-    
-    #def handle_stdout(self, text):
-        #return text
-        
+
     def get_status(self, term):
         return term.yellow(f"{self.eval_step} {self.eval_prog}: "
                            f"mlm_acc: {self.mlm_acc:.4f} | "
                            f"order_acc: {self.order_acc:.4f}")
 
 
-# usage: autobert [config] [input] [test_input] [model_dir] [steps] [savesteps]
-
-
 basepath = "models_pre/tenten2"
 cmds = []
 precfg = cfg["pretrain"]
-precfg["albert_config_file"] = f"configs/albert_config.json"
-precfg["input_file"] = sys.argv[2]
-precfg["output_dir"] = f"{sys.argv[4]}/output/"
-precfg["export_dir"] = f"{sys.argv[4]}/export/"
-precfg["num_train_steps"] = sys.argv[5]
-precfg["save_checkpoints_steps"] = sys.argv[6]
-precfg["num_warmup_steps"] = "500"
+precfg["input_file"] = args.train
+precfg["output_dir"] = f"{args.model}/output/"
+precfg["export_dir"] = f"{args.model}/export/"
+precfg["num_train_steps"] = args.steps
+precfg["save_checkpoints_steps"] = args.savesteps
+
 
 precfg["do_train"] = True
 precfg["do_eval"] = False
@@ -151,9 +130,6 @@ precfg["do_train"] = False
 precfg["do_eval"] = True
 cmds.append(Evaluator(BINS["pretrain"] + options_from_dict(precfg),
                       {"CUDA_VISIBLE_DEVICES": "1", "TF_CPP_MIN_LOG_LEVEL": "3"}))
-
-#cmds = [" ".join(cmd) for cmd in cmds]
-#pprint(cmds)
 
 with CommandCombiner(cmds) as comb:
     comb.join()
