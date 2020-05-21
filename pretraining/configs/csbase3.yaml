@@ -1,0 +1,9 @@
+common:
+    width: 256
+
+pretrain:
+    max_seq_length: "#width"
+    albert_config_file: "configs/csbase3.json"
+    num_warmup_steps: 2000
+    train_batch_size: 32
+    eval_batch_size: 32
