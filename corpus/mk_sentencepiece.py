@@ -1,8 +1,9 @@
-import sentencepiece as spm
+# Create SentencePiece model from text file. Each sentence on its own line.
+# The recomanded file size is 10 000 000 sentences (approx. 1 GB)
 
-files = [f"tenten_proc_{i}.txt" for i in range(101, 136 + 1)]
-prefix = "preproc/tenten/"
-files = ",".join(prefix + f for f in files)
+# this configuration adds special tokens (control symbols) used in ALBERT
+
+import sentencepiece as spm
 
 files="spm/tta.txt"
 
