@@ -14,6 +14,10 @@
 # limitations under the License.
 # Lint as: python2, python3
 # coding=utf-8
+
+# Adapted for Czech ALBERT by Petr Zelina
+# all changes marked with -csa-
+
 """Tokenization classes."""
 
 from __future__ import absolute_import
@@ -95,13 +99,12 @@ def preprocess_text(inputs, remove_space=True, lower=False):
     except UnicodeDecodeError:
       outputs = six.ensure_text(outputs, "latin-1")
 
-  # cs preprocessing
-#  outputs = unicodedata.normalize("NFKD", outputs)
-#  outputs = "".join([c for c in outputs if not unicodedata.combining(c)])
- 
   if lower:
     outputs = outputs.lower()
-
+    
+  # -csa- Czech text preprocessing
+  # outputs = unicodedata.normalize("NFKD", outputs)
+  # outputs = "".join([c for c in outputs if not unicodedata.combining(c)])
   outputs = re.sub("[0-9]", "#", outputs)
   outputs = re.sub("[‒–—―]", "-", outputs)
   outputs = re.sub("[“”‘’„“‚‘\"']", "'", outputs)
