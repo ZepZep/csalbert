@@ -1,0 +1,10 @@
+tensorflow==1.15.2      # CPU Version of TensorFlow
+tensorflow-gpu==1.15    # GPU version of TensorFlow
+tensorflow_hub==0.7
+numpy
+pandas
+sklearn
+matplotlib
+blessings
+sentencepiece
+bert-for-tf2
