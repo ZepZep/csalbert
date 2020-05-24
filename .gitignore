@@ -1,13 +1,25 @@
 .ipynb_checkpoints
 __pycache__
 
+corpus/
+
 pretraining/models/*
+pretraining/configs/grid
+pretraining/datasets
+
+
 propaganda/dataset/*
+propaganda/log/*
+propaganda/models
+
 sqad/dataset/*
 sqad/models/*
+sqad/features/*
+sqad/feature_bak/
+sqad/models_export
+
 zother
-
-
-
-
+.other
+public_html
+web
 
