@@ -1,5 +1,19 @@
 #!/usr/bin/env python2
 #coding=utf-8
+# Copyright 2020 Petr Zelina and Ondřej Herman.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#coding=utf-8
 from __future__ import unicode_literals
 from __future__ import print_function
 
@@ -149,11 +163,6 @@ def main():
 
     log.info("reading annotations")
     attrs = read_annots(corp, db)
-    #if (args.attr is None) or (sum(attrs.name == args.attr) == 0):
-    #    log.error("you must specify valid attribute to train on")
-    #    log.info("available attributes are: " + " ".join(attrs.name.unique()))
-    #    return 1
-    #log.info("read %d annotations for %s" % (sum(attrs.name == args.attr), args.attr))
 
     headers_simple = []
     headers_multi = []
@@ -176,11 +185,6 @@ def main():
     with open('labels.csv', 'w') as lf:
         for x in headers_simple: print(x, file=lf)
         for x,y,z in headers_multi: print(z.encode('utf-8'), file=lf)
-
-    #of = open('data.csv', 'w')
-    
-    #row = 'index\ttext\t' + '\t'.join(headers_simple) + '\t' + '\t'.join(ma for k, v, ma in headers_multi)
-    #print(row.encode('UTF-8'), file=of)
 
     print("Grouping most common answer")
     most_common = attrs.groupby(["docid", "name"]).agg(lambda x: pd.Series.mode(x)[0])
